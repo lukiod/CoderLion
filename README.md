@@ -1,148 +1,86 @@
 # CodeLion 🦁
 
-An open-source AI-powered code review tool with multi-agent architecture, powered by Google Gemini.
+AI code review for people who actually read their pull requests.
 
-## ✨ Features
+CodeLion connects to your GitHub repos, looks at your pull requests, and gives real feedback on things that matter — security issues, performance problems, and messy code.
 
-- **🔐 Client-Side Security**: Your API keys stay in your browser, never on our servers
-- **🔑 GitHub OAuth**: Secure one-click sign-in with GitHub
-- **🤖 Multi-Agent Architecture**: Specialized agents for security, performance, and style
-- **⚡ Real-time Reviews**: Instant code reviews on pull requests
-- **🎯 Production Ready**: Built for scale with Supabase and Vercel
-- **💎 Modern UI**: Beautiful, responsive dashboard with real-time updates
+No server-side AI processing.
+No weird permissions.
+No black box magic.
 
-## 🏗️ Architecture
-
-### **Why This Design?**
-- **Client-Side API Keys**: Your Gemini API key never touches our servers - better security and privacy
-- **GitHub OAuth**: Industry-standard authentication, not API keys
-- **Supabase Database**: Stores user sessions, repository connections, and review history
-- **Multi-Agent System**: Each agent specializes in different aspects of code review
-
-## 🚀 Tech Stack
-
-- **Frontend**: Next.js 14 + TypeScript + Tailwind CSS + Supabase
-- **Backend**: FastAPI + Supabase PostgreSQL
-- **AI**: Google Gemini API (client-side)
-- **Auth**: GitHub OAuth
-- **Deployment**: Vercel + Supabase
-
-## 🎯 Quick Start
-
-### **1. Deploy to Vercel (Recommended)**
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/coderlion)
-
-### **2. Set up Supabase**
-
-1. Create a [Supabase project](https://supabase.com)
-2. Copy your database URL and keys
-3. Add them to your Vercel environment variables
-
-### **3. Configure GitHub OAuth**
-
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Create a new OAuth App
-3. Set callback URL to: `https://your-domain.vercel.app/auth/callback`
-4. Add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to Vercel
-
-### **4. Get Gemini API Key**
-
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Create a new API key
-3. Users will enter this in the app (stored locally)
-
-## 🔧 Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/coderlion.git
-cd coderlion
-
-# Install dependencies
-cd frontend && npm install
-cd ../backend && pip install -r requirements.txt
-
-# Set up environment
-cp env.example .env
-# Update .env with your Supabase and GitHub credentials
-
-# Start development servers
-cd frontend && npm run dev
-cd backend && uvicorn app.main:app --reload
-```
-
-## 🏗️ Production Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   User Browser  │    │   Vercel Edge   │    │  Supabase DB    │
-│                 │    │                 │    │                 │
-│ • API Key (LS)  │◄──►│ • Next.js App   │◄──►│ • User Sessions │
-│ • GitHub OAuth  │    │ • API Routes    │    │ • Repositories  │
-│ • Review UI     │    │ • Webhooks      │    │ • Review History│
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                       ┌─────────────────┐
-                       │  GitHub API     │
-                       │ • OAuth Flow    │
-                       │ • Webhook Events│
-                       │ • PR Data       │
-                       └─────────────────┘
-                                │
-                                ▼
-                       ┌─────────────────┐
-                       │  Gemini API     │
-                       │ • Code Analysis │
-                       │ • Multi-Agents  │
-                       │ • Review Gen    │
-                       └─────────────────┘
-```
-
-## 🔐 Security Features
-
-- **Client-Side API Keys**: Your Gemini API key never leaves your browser
-- **GitHub OAuth**: Industry-standard authentication
-- **Supabase RLS**: Row-level security for data isolation
-- **JWT Tokens**: Secure session management
-- **HTTPS Only**: All communication encrypted
-
-## 🚀 Deployment
-
-### **Vercel (Recommended)**
-
-1. **Fork this repository**
-2. **Connect to Vercel**
-3. **Add environment variables**:
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   GITHUB_CLIENT_ID=your_github_client_id
-   GITHUB_CLIENT_SECRET=your_github_client_secret
-   ```
-4. **Deploy!**
-
-### **Other Platforms**
-
-- **Railway**: Use the `railway.json` config
-- **Render**: Use the `render.yaml` config
-- **Docker**: Use the provided `Dockerfile`
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## 🆘 Support
-
-- **Discord**: Join our community
-- **GitHub Issues**: Report bugs and request features
-- **Documentation**: Check our [docs](https://coderlion.dev)
+Your Gemini API key stays in your browser. Your code stays yours.
 
 ---
 
-**Built with ❤️ by the CodeLion team**
+## Why I built this
+
+Most AI code review tools feel… off.
+
+Some need full access to your repositories.
+Some send your code to their servers.
+Some give feedback so generic it’s basically useless.
+
+I wanted something different:
+
+* secure by design
+* actually helpful
+* simple to connect
+* fast enough to use on every PR
+
+So CodeLion runs AI from the client, uses focused review agents, and plugs straight into GitHub.
+
+That’s it.
+
+---
+
+## What it does
+
+When a pull request is opened or updated, CodeLion:
+
+* checks for security risks
+* looks for performance problems
+* points out questionable patterns
+* suggests cleaner implementations
+* keeps a history of reviews
+
+Think of it like having a small review team that never gets tired.
+
+---
+
+## How it works
+
+1. Sign in with GitHub
+2. Connect a repo
+3. Open a PR
+4. CodeLion reviews it automatically
+5. You get structured feedback
+
+Each AI agent focuses on one concern (security, performance, style, etc.).
+
+No giant monolithic prompt. Just focused reviewers.
+
+---
+
+## Architecture (simple version)
+
+Frontend → Next.js app running on Vercel
+Backend → FastAPI service
+Database → Supabase PostgreSQL
+Auth → GitHub OAuth
+AI → Google Gemini (called from the browser)
+
+The important part:
+
+**AI runs client-side.**
+Your API key never touches our backend.
+
+---
+
+## Stack
+
+Frontend
+
+* Next.js 14
+* TypeScript
+* Tailwind
+* Sup
